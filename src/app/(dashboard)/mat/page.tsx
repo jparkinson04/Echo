@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useAccent } from '@/components/AccentProvider';
 import { MOCK_MAT_SCHOOLS } from '@/lib/mockData';
 import { ragColour } from '@/lib/risk';
 
@@ -16,9 +19,14 @@ const RAG_FG: Record<'green' | 'amber' | 'red', string> = {
 };
 
 export default function MATDashboardPage() {
-  const schools = MOCK_MAT_SCHOOLS;
-  const avg =
-    schools.reduce((s, x) => s + x.wellbeing, 0) / schools.length;
+  const { trustName, schoolName } = useAccent();
+
+  // Show the user's saved school name as the first school in the
+  // trust heat map. The rest are demo placeholders to populate the grid.
+  const schools = MOCK_MAT_SCHOOLS.map((s, i) =>
+    i === 0 ? { ...s, name: schoolName } : s,
+  );
+  const avg = schools.reduce((s, x) => s + x.wellbeing, 0) / schools.length;
   const totalAtRisk = schools.reduce((s, x) => s + x.ectAtRisk, 0);
 
   return (
@@ -26,7 +34,7 @@ export default function MATDashboardPage() {
       <header className="flex items-end justify-between">
         <div>
           <div className="text-xs uppercase tracking-wider text-text-muted">Trust overview</div>
-          <h1 className="mt-1 font-display text-4xl text-text">Northstar Learning Trust</h1>
+          <h1 className="mt-1 font-display text-4xl text-text">{trustName}</h1>
           <p className="mt-2 text-sm text-text-muted">
             {schools.length} schools &middot; May 2026 pulse
           </p>

@@ -4,9 +4,9 @@ interface EchoMarkProps {
 }
 
 const SIZE: Record<NonNullable<EchoMarkProps['size']>, { width: number; height: number }> = {
-  sm: { width: 110, height: 32 },
-  md: { width: 156, height: 46 },
-  lg: { width: 260, height: 80 },
+  sm: { width: 110, height: 38 },
+  md: { width: 160, height: 56 },
+  lg: { width: 240, height: 84 },
 };
 
 export function EchoMark({ className = '', size = 'md' }: EchoMarkProps) {
@@ -15,7 +15,7 @@ export function EchoMark({ className = '', size = 'md' }: EchoMarkProps) {
     <svg
       width={dim.width}
       height={dim.height}
-      viewBox="0 0 400 120"
+      viewBox="15 25 200 70"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
