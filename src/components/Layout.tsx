@@ -51,8 +51,8 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="flex h-screen">
       <aside className="flex w-64 flex-col overflow-y-auto border-r border-border bg-surface px-5 py-6">
-        <div className="mb-10">
-          <EchoMark size="sm" />
+        <div className="mb-10 text-text">
+          <EchoMark size="md" />
         </div>
 
         <div className="mb-6">
