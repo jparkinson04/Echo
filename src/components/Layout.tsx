@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
+import type { UserRole } from '@/types';
 import { useAccent } from './AccentProvider';
 import { EchoMark } from './EchoMark';
 
@@ -33,12 +34,19 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { role, setRole, logoDataUrl, orgName } = useAccent();
 
   const isMat = role === 'mat_admin';
   const nav = isMat ? MAT_NAV : SCHOOL_NAV;
   const userName = isMat ? 'Tom Hadley' : 'Sarah Mitchell';
   const roleLabel = isMat ? 'MAT admin' : 'Headteacher';
+
+  function switchRole(next: UserRole) {
+    if (next === role) return;
+    setRole(next);
+    router.push(next === 'mat_admin' ? '/mat' : '/dashboard');
+  }
 
   return (
     <div className="flex h-screen">
@@ -105,7 +113,7 @@ export function Layout({ children }: LayoutProps) {
             </div>
             <div className="flex rounded-input border border-border bg-bg p-0.5">
               <button
-                onClick={() => setRole('mat_admin')}
+                onClick={() => switchRole('mat_admin')}
                 className={`flex-1 rounded-[6px] px-2 py-1 text-[11px] transition-colors ${
                   isMat ? 'bg-surface-2 text-text' : 'text-text-muted'
                 }`}
@@ -113,7 +121,7 @@ export function Layout({ children }: LayoutProps) {
                 MAT
               </button>
               <button
-                onClick={() => setRole('school_admin')}
+                onClick={() => switchRole('school_admin')}
                 className={`flex-1 rounded-[6px] px-2 py-1 text-[11px] transition-colors ${
                   !isMat ? 'bg-surface-2 text-text' : 'text-text-muted'
                 }`}
