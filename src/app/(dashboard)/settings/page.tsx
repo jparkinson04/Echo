@@ -13,27 +13,40 @@ export default function SettingsPage() {
     role,
     theme,
     setTheme,
-    logoDataUrl,
-    setLogoDataUrl,
-    orgName,
-    setOrgName,
+    trustName,
+    setTrustName,
+    schoolName,
+    setSchoolName,
+    trustLogo,
+    setTrustLogo,
+    schoolLogo,
+    setSchoolLogo,
   } = useAccent();
-  const canEditAccent = role === 'mat_admin';
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [nameDraft, setNameDraft] = useState(orgName);
-  const [logoDraft, setLogoDraft] = useState<string | null>(logoDataUrl);
+  const isMat = role === 'mat_admin';
+  const canEditAccent = isMat;
+
+  // Bind the right source/setter for the active role.
+  const committedName = isMat ? trustName : schoolName;
+  const committedLogo = isMat ? trustLogo : schoolLogo;
+  const persistName = isMat ? setTrustName : setSchoolName;
+  const persistLogo = isMat ? setTrustLogo : setSchoolLogo;
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [nameDraft, setNameDraft] = useState(committedName);
+  const [logoDraft, setLogoDraft] = useState<string | null>(committedLogo);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [justSaved, setJustSaved] = useState(false);
 
+  // Keep the draft in sync when the underlying committed value changes
+  // (e.g. when the user toggles role and the form switches between trust and school).
   useEffect(() => {
-    setNameDraft(orgName);
-  }, [orgName]);
-  useEffect(() => {
-    setLogoDraft(logoDataUrl);
-  }, [logoDataUrl]);
+    setNameDraft(committedName);
+    setLogoDraft(committedLogo);
+    setUploadError(null);
+  }, [committedName, committedLogo]);
 
-  const isDirty = nameDraft.trim() !== orgName || logoDraft !== logoDataUrl;
+  const isDirty = nameDraft.trim() !== committedName || logoDraft !== committedLogo;
   const canSave = isDirty && nameDraft.trim().length > 0;
 
   function onPickLogo(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,15 +72,15 @@ export default function SettingsPage() {
   function saveProfile() {
     const trimmed = nameDraft.trim();
     if (!trimmed) return;
-    setOrgName(trimmed);
-    setLogoDataUrl(logoDraft);
+    persistName(trimmed);
+    persistLogo(logoDraft);
     setJustSaved(true);
     setTimeout(() => setJustSaved(false), 2400);
   }
 
   function discardProfile() {
-    setNameDraft(orgName);
-    setLogoDraft(logoDataUrl);
+    setNameDraft(committedName);
+    setLogoDraft(committedLogo);
     setUploadError(null);
   }
 
@@ -76,13 +89,20 @@ export default function SettingsPage() {
       <header>
         <div className="text-xs uppercase tracking-wider text-text-muted">Settings</div>
         <h1 className="mt-1 font-display text-4xl text-text">
-          {canEditAccent ? 'Your trust' : 'Your school'}
+          {isMat ? 'Your trust' : 'Your school'}
         </h1>
+        <p className="mt-2 max-w-2xl text-sm text-text-muted">
+          {isMat
+            ? "You're editing the trust's profile. The trust name and logo show in MAT view and on trust-wide outputs. Each school in your trust keeps its own name and logo, edited separately when you switch into that school's view."
+            : "You're editing the school's profile. The school name and logo show in school view and on every output the school produces, including newsletters, shareable graphics, and the public survey link."}
+        </p>
       </header>
 
       <section className="card flex flex-col gap-5">
         <div className="flex items-start justify-between gap-4">
-          <h2 className="font-display text-xl text-text">Profile</h2>
+          <h2 className="font-display text-xl text-text">
+            {isMat ? 'Trust profile' : 'School profile'}
+          </h2>
           {justSaved && (
             <span
               className="rounded-pill px-3 py-1 text-xs font-medium"
@@ -94,23 +114,22 @@ export default function SettingsPage() {
         </div>
 
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="text-text-muted">
-            {canEditAccent ? 'Trust name' : 'School name'}
-          </span>
+          <span className="text-text-muted">{isMat ? 'Trust name' : 'School name'}</span>
           <input
             className="input"
             value={nameDraft}
             onChange={(e) => setNameDraft(e.target.value)}
-            placeholder={canEditAccent ? 'Northstar Learning Trust' : 'Greenfield Primary'}
+            placeholder={isMat ? 'Northstar Learning Trust' : 'Greenfield Primary'}
           />
         </label>
 
         <div className="flex flex-col gap-2 text-sm">
-          <span className="text-text-muted">Logo</span>
+          <span className="text-text-muted">{isMat ? 'Trust logo' : 'School logo'}</span>
           <p className="max-w-xl text-xs text-text-subtle">
-            Up to {MAX_LOGO_MB}MB. PNG or SVG with a transparent background works best. Your
-            logo will appear in the sidebar, on every newsletter, and in the corner of any
-            shareable graphic.
+            Up to {MAX_LOGO_MB}MB. PNG or SVG with a transparent background works best.{' '}
+            {isMat
+              ? 'Shown in the sidebar when staff are viewing the trust, plus on any trust-wide outputs.'
+              : 'Shown in the sidebar when staff are viewing this school, on every newsletter, in the corner of any shareable graphic, and on the public survey page.'}
           </p>
           <div className="flex items-center gap-4">
             <div
@@ -121,7 +140,7 @@ export default function SettingsPage() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={logoDraft}
-                  alt="School logo"
+                  alt={`${isMat ? 'Trust' : 'School'} logo`}
                   className="h-full w-full rounded-card object-contain p-2"
                 />
               ) : (
@@ -172,7 +191,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between gap-3 border-t border-border pt-5">
           <span className="text-xs text-text-subtle">
             {isDirty
-              ? 'Unsaved changes. Save to apply them across the platform.'
+              ? `Unsaved changes. Save to apply them across the ${isMat ? 'trust' : 'school'}.`
               : 'Up to date.'}
           </span>
           <div className="flex items-center gap-2">
