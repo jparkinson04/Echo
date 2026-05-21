@@ -58,14 +58,14 @@ export default function SharePage() {
   const [busy, setBusy] = useState(false);
   const [template, setTemplate] = useState<ShareTemplate>('hero');
   const [focusCategory, setFocusCategory] = useState<string>(MOCK_CATEGORIES[0].category);
-  const { logoDataUrl } = useAccent();
+  const { logoDataUrl, orgName } = useAccent();
 
   const d = MOCK_DASHBOARD;
 
   const props = useMemo(
     () => ({
       template,
-      orgName: 'Greenfield Primary',
+      orgName,
       month: 'May 2026',
       wellbeing: d.wellbeing_score,
       delta: d.wellbeing_delta,
@@ -82,7 +82,7 @@ export default function SharePage() {
       },
       logoDataUrl,
     }),
-    [template, focusCategory, d, logoDataUrl],
+    [template, focusCategory, d, logoDataUrl, orgName],
   );
 
   async function download() {

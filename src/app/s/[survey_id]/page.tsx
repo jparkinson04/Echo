@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { AnonymousSurveyForm } from '@/components/AnonymousSurveyForm';
+import { ClientOrgName } from '@/components/ClientOrgName';
 import { EchoMark } from '@/components/EchoMark';
 import { hexToRgba, lightenHex } from '@/lib/accent';
 import { MOCK_SURVEYS, MOCK_SURVEY_ORG } from '@/lib/mockData';
@@ -38,7 +39,9 @@ export default function PublicSurveyPage({ params }: PublicSurveyPageProps) {
         <header className="flex flex-col items-center gap-6 text-center">
           <EchoMark size="md" />
           <div>
-            <span className="pop-badge mb-3">✦ {MOCK_SURVEY_ORG.name}</span>
+            <span className="pop-badge mb-3">
+              ✦ <ClientOrgName fallback={MOCK_SURVEY_ORG.name} />
+            </span>
             <h1 className="font-display text-4xl leading-tight text-text">
               {survey.title}
             </h1>
@@ -69,14 +72,15 @@ export default function PublicSurveyPage({ params }: PublicSurveyPageProps) {
             <div>
               <div className="font-medium">This survey is completely anonymous.</div>
               <div className="mt-1 text-text-muted">
-                Your name, your email, and your device are never recorded.
-                {MOCK_SURVEY_ORG.name} only sees the data and the words you choose to share.
+                Your name, your email, and your device are never recorded.{' '}
+                <ClientOrgName fallback={MOCK_SURVEY_ORG.name} /> only sees the data and the
+                words you choose to share.
               </div>
             </div>
           </div>
         </header>
 
-        <AnonymousSurveyForm survey={survey} orgName={MOCK_SURVEY_ORG.name} />
+        <AnonymousSurveyForm survey={survey} />
 
         <footer className="mt-4 text-center text-xs text-text-subtle">
           <span style={{ color: 'var(--color-pop)' }}>✦</span> Made with Echo

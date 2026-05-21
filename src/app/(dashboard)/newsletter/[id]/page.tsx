@@ -58,7 +58,6 @@ export default function NewsletterDetailPage({ params }: NewsletterDetailPagePro
       </Link>
       <NewsletterEditor
         newsletter={newsletter}
-        orgName="Greenfield Primary"
         organisationId="org-1"
         surveyId="survey-may-2026"
         dashboardData={dashboardData}

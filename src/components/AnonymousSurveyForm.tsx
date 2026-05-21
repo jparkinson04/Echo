@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { DragDropImage, type DroppedImage } from '@/components/DragDropImage';
+import { useLocalOrgName } from '@/components/ClientOrgName';
 import type { Survey, SurveyQuestion } from '@/types';
 
 interface AnonymousSurveyFormProps {
   survey: Survey;
-  orgName: string;
+  orgName?: string;
 }
 
 interface Answers {
@@ -27,7 +28,11 @@ const EMPTY_VOICE: VoiceAnswers = {
   suggestion_text: '',
 };
 
-export function AnonymousSurveyForm({ survey, orgName }: AnonymousSurveyFormProps) {
+export function AnonymousSurveyForm({
+  survey,
+  orgName: orgNameProp,
+}: AnonymousSurveyFormProps) {
+  const orgName = useLocalOrgName(orgNameProp ?? 'your school');
   const [answers, setAnswers] = useState<Answers>({});
   const [voice, setVoice] = useState<VoiceAnswers>(EMPTY_VOICE);
   const [photos, setPhotos] = useState<DroppedImage[]>([]);

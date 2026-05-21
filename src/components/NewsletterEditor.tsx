@@ -37,7 +37,7 @@ interface DashboardSummary {
 
 interface NewsletterEditorProps {
   newsletter: MockNewsletter;
-  orgName: string;
+  orgName?: string;
   organisationId?: string;
   surveyId?: string;
   dashboardData?: DashboardSummary;
@@ -48,13 +48,14 @@ type Section = MockNewsletter['sections'][number];
 
 export function NewsletterEditor({
   newsletter,
-  orgName,
+  orgName: orgNameProp,
   organisationId = 'org-1',
   surveyId = 'survey-may-2026',
   dashboardData,
   accentHex = '#00E090',
 }: NewsletterEditorProps) {
-  const { logoDataUrl } = useAccent();
+  const { logoDataUrl, orgName: orgNameFromContext } = useAccent();
+  const orgName = orgNameFromContext || orgNameProp || 'Your school';
   const [title, setTitle] = useState(newsletter.title);
   const [sections, setSections] = useState<Section[]>(newsletter.sections);
   const [heroStat, setHeroStat] = useState(newsletter.hero_stat);
