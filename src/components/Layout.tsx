@@ -1,0 +1,116 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { useAccent } from './AccentProvider';
+import { EchoMark } from './EchoMark';
+
+interface NavItem {
+  href: string;
+  label: string;
+  icon: string;
+}
+
+const SCHOOL_NAV: NavItem[] = [
+  { href: '/dashboard', label: 'Dashboard', icon: '◐' },
+  { href: '/surveys', label: 'Surveys', icon: '◇' },
+  { href: '/ect', label: 'ECT Tracker', icon: '◈' },
+  { href: '/newsletter', label: 'Newsletter', icon: '◉' },
+  { href: '/share', label: 'Share', icon: '✦' },
+  { href: '/blog', label: 'Review queue', icon: '◆' },
+  { href: '/settings', label: 'Settings', icon: '◍' },
+];
+
+const MAT_NAV: NavItem[] = [
+  { href: '/mat', label: 'Trust Overview', icon: '◐' },
+  { href: '/settings', label: 'Settings', icon: '◍' },
+];
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+export function Layout({ children }: LayoutProps) {
+  const pathname = usePathname();
+  const { role, setRole } = useAccent();
+
+  const isMat = role === 'mat_admin';
+  const nav = isMat ? MAT_NAV : SCHOOL_NAV;
+  const orgName = isMat ? 'Northstar Learning Trust' : 'Greenfield Primary';
+  const userName = isMat ? 'Tom Hadley' : 'Sarah Mitchell';
+  const roleLabel = isMat ? 'MAT admin' : 'Headteacher';
+
+  return (
+    <div className="flex h-screen">
+      <aside className="flex w-64 flex-col overflow-y-auto border-r border-border bg-surface px-5 py-6">
+        <div className="mb-10">
+          <EchoMark size="sm" />
+        </div>
+
+        <div className="mb-6">
+          <div className="text-xs uppercase tracking-wider text-text-subtle">
+            {isMat ? 'Trust' : 'School'}
+          </div>
+          <div className="mt-1 font-display text-base leading-tight text-text">{orgName}</div>
+        </div>
+
+        <nav className="flex flex-1 flex-col gap-1">
+          {nav.map((item) => {
+            const active = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 rounded-input px-3 py-2 text-sm transition-colors ${
+                  active
+                    ? 'bg-surface-2 text-text border border-primary/40'
+                    : 'text-text-muted hover:bg-surface-2 hover:text-text border border-transparent'
+                }`}
+              >
+                <span className={active ? 'text-primary-light' : 'text-text-subtle'}>
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-6 flex flex-col gap-3 rounded-card border border-border p-3">
+          <div>
+            <div className="text-xs text-text-muted">Signed in as</div>
+            <div className="text-sm text-text">{userName}</div>
+            <div className="text-xs text-text-subtle">{roleLabel}</div>
+          </div>
+
+          <div className="flex flex-col gap-1.5 border-t border-border pt-3">
+            <div className="text-[10px] uppercase tracking-wider text-text-subtle">
+              Demo: view as
+            </div>
+            <div className="flex rounded-input border border-border bg-bg p-0.5">
+              <button
+                onClick={() => setRole('mat_admin')}
+                className={`flex-1 rounded-[6px] px-2 py-1 text-[11px] transition-colors ${
+                  isMat ? 'bg-surface-2 text-text' : 'text-text-muted'
+                }`}
+              >
+                MAT
+              </button>
+              <button
+                onClick={() => setRole('school_admin')}
+                className={`flex-1 rounded-[6px] px-2 py-1 text-[11px] transition-colors ${
+                  !isMat ? 'bg-surface-2 text-text' : 'text-text-muted'
+                }`}
+              >
+                School
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main className="flex-1 overflow-y-auto px-10 py-8">{children}</main>
+    </div>
+  );
+}
