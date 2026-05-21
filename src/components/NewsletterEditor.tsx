@@ -22,6 +22,7 @@ import type {
   NewsletterSectionKind,
 } from '@/lib/mockData';
 import { MOCK_APPROVED_PHOTOS } from '@/lib/mockData';
+import { useAccent } from '@/components/AccentProvider';
 
 interface DashboardSummary {
   wellbeing_score: number;
@@ -53,6 +54,7 @@ export function NewsletterEditor({
   dashboardData,
   accentHex = '#00E090',
 }: NewsletterEditorProps) {
+  const { logoDataUrl } = useAccent();
   const [title, setTitle] = useState(newsletter.title);
   const [sections, setSections] = useState<Section[]>(newsletter.sections);
   const [heroStat, setHeroStat] = useState(newsletter.hero_stat);
@@ -66,8 +68,8 @@ export function NewsletterEditor({
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
   const html = useMemo(
-    () => buildHtml(title, sections, orgName, accentHex, heroStat, newsletter.month),
-    [title, sections, orgName, accentHex, heroStat, newsletter.month],
+    () => buildHtml(title, sections, orgName, accentHex, heroStat, newsletter.month, logoDataUrl),
+    [title, sections, orgName, accentHex, heroStat, newsletter.month, logoDataUrl],
   );
 
   function sectionKey(s: Section, i: number) {
@@ -288,6 +290,7 @@ export function NewsletterEditor({
           month={newsletter.month}
           heroStat={heroStat}
           onHeroStatChange={setHeroStat}
+          logoDataUrl={logoDataUrl}
         />
       )}
     </div>
@@ -495,6 +498,7 @@ interface NewsletterPreviewProps {
   month: string;
   heroStat?: { label: string; value: string; delta?: string };
   onHeroStatChange?: (next: { label: string; value: string; delta?: string }) => void;
+  logoDataUrl?: string | null;
 }
 
 function NewsletterPreview({
@@ -503,6 +507,7 @@ function NewsletterPreview({
   orgName,
   month,
   heroStat,
+  logoDataUrl,
 }: NewsletterPreviewProps) {
   return (
     <div className="card overflow-hidden bg-white p-0 text-[#0B1628]">
@@ -539,8 +544,20 @@ function NewsletterPreview({
         </svg>
 
         <div className="relative flex flex-col gap-6">
-          <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-white/85">
-            <span className="font-semibold">{orgName}</span>
+          <div className="flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-white/85">
+            <div className="flex items-center gap-3">
+              {logoDataUrl && (
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-pill bg-white/15 backdrop-blur">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={logoDataUrl}
+                    alt={`${orgName} logo`}
+                    className="h-full w-full object-contain p-1"
+                  />
+                </span>
+              )}
+              <span className="font-semibold">{orgName}</span>
+            </div>
             <span>{month}</span>
           </div>
 
@@ -687,6 +704,7 @@ function buildHtml(
   accentHex: string,
   heroStat: MockNewsletter['hero_stat'],
   month: string,
+  logoDataUrl: string | null,
 ): string {
   const accentDark = '#0A8A60';
 
@@ -763,7 +781,14 @@ function buildHtml(
   <div class="wrap">
     <header class="hero">
       <div class="meta">
-        <span class="meta-name">${escapeHtml(orgName)}</span>
+        <span class="meta-name">
+          ${
+            logoDataUrl
+              ? `<img src="${logoDataUrl}" alt="${escapeHtml(orgName)} logo" style="display:inline-block; vertical-align:middle; height:32px; width:32px; object-fit:contain; padding:3px; background:rgba(255,255,255,0.15); border-radius:99px; margin-right:10px;" />`
+              : ''
+          }
+          ${escapeHtml(orgName)}
+        </span>
         <span>${escapeHtml(month)}</span>
       </div>
       <h1>${escapeHtml(title)}</h1>

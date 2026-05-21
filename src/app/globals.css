@@ -22,6 +22,24 @@
   --color-danger:        #E24B4A;
 }
 
+[data-theme="light"] {
+  --color-bg:            #F4F6FA;
+  --color-surface:       #FFFFFF;
+  --color-surface-2:     #EDF0F5;
+  --color-border:        rgba(11, 22, 40, 0.10);
+  --color-primary:       #1B6EF3;
+  --color-primary-light: #4D91FF;
+  --color-text:          #0B1628;
+  --color-text-muted:    rgba(11, 22, 40, 0.60);
+  --color-text-subtle:   rgba(11, 22, 40, 0.32);
+  --color-pop:           #00E090;
+  --color-pop-light:     #0A8A60;
+  --color-pop-bg:        rgba(0, 224, 144, 0.18);
+  --color-success:       #15A04C;
+  --color-warning:       #C76C12;
+  --color-danger:        #C73B3A;
+}
+
 html,
 body {
   background: var(--color-bg);
@@ -116,9 +134,10 @@ body {
 
   .btn-pop {
     background: var(--color-pop);
-    color: white;
+    color: #0B1628;
+    font-weight: 600;
   }
-  .btn-pop:hover { background: var(--color-pop-light); }
+  .btn-pop:hover { filter: brightness(0.95); }
 
   .btn-ghost {
     background: transparent;

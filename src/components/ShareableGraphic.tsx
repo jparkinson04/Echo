@@ -22,6 +22,7 @@ export interface ShareableGraphicProps {
   categoryTrends: Record<string, number[]>;
   focusCategory?: string;
   shoutout?: { nominee?: string | null; content: string };
+  logoDataUrl?: string | null;
   className?: string;
 }
 
@@ -50,7 +51,12 @@ export const ShareableGraphic = forwardRef<HTMLDivElement, ShareableGraphicProps
         <Glow />
         <Stripe />
 
-        <Header orgName={props.orgName} month={props.month} template={props.template} />
+        <Header
+          orgName={props.orgName}
+          month={props.month}
+          template={props.template}
+          logoDataUrl={props.logoDataUrl}
+        />
 
         <div
           style={{
@@ -118,10 +124,12 @@ function Header({
   orgName,
   month,
   template,
+  logoDataUrl,
 }: {
   orgName: string;
   month: string;
   template: ShareTemplate;
+  logoDataUrl?: string | null;
 }) {
   const title: Record<ShareTemplate, string> = {
     hero: 'Wellbeing report',
@@ -146,6 +154,9 @@ function Header({
       <BrandMark />
       <div
         style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 16,
           fontFamily: SYNE,
           fontWeight: 700,
           fontSize: 40,
@@ -153,7 +164,28 @@ function Header({
           color: '#FFFFFF',
         }}
       >
-        {orgName}
+        {logoDataUrl && (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 56,
+              height: 56,
+              borderRadius: 999,
+              background: 'rgba(255,255,255,0.10)',
+              overflow: 'hidden',
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={logoDataUrl}
+              alt={`${orgName} logo`}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }}
+            />
+          </span>
+        )}
+        <span>{orgName}</span>
       </div>
       <div
         style={{

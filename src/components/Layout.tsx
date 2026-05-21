@@ -33,11 +33,10 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
-  const { role, setRole } = useAccent();
+  const { role, setRole, logoDataUrl, orgName } = useAccent();
 
   const isMat = role === 'mat_admin';
   const nav = isMat ? MAT_NAV : SCHOOL_NAV;
-  const orgName = isMat ? 'Northstar Learning Trust' : 'Greenfield Primary';
   const userName = isMat ? 'Tom Hadley' : 'Sarah Mitchell';
   const roleLabel = isMat ? 'MAT admin' : 'Headteacher';
 
@@ -78,10 +77,26 @@ export function Layout({ children }: LayoutProps) {
         </nav>
 
         <div className="mt-6 flex flex-col gap-3 rounded-card border border-border p-3">
-          <div>
-            <div className="text-xs text-text-muted">Signed in as</div>
-            <div className="text-sm text-text">{userName}</div>
-            <div className="text-xs text-text-subtle">{roleLabel}</div>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-pill border border-border bg-surface-2">
+              {logoDataUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={logoDataUrl}
+                  alt={`${orgName} logo`}
+                  className="h-full w-full object-contain p-1"
+                />
+              ) : (
+                <span className="font-display text-base" style={{ color: 'var(--color-pop)' }}>
+                  ✦
+                </span>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] uppercase tracking-wider text-text-muted">Signed in</div>
+              <div className="truncate text-sm text-text">{userName}</div>
+              <div className="truncate text-[11px] text-text-subtle">{roleLabel}</div>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5 border-t border-border pt-3">

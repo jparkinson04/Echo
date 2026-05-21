@@ -37,11 +37,11 @@ export function injectAccentColour(hex: string): void {
 
 export const ACCENT_PRESETS = [
   { name: 'Neon Green (default)', hex: '#00E090' },
-  { name: 'Spring Green', hex: '#3AF584' },
-  { name: 'Royal Purple', hex: '#7B2FBE' },
-  { name: 'Hot Pink', hex: '#F72585' },
-  { name: 'Burnt Orange', hex: '#E85D04' },
-  { name: 'Gold', hex: '#D4A017' },
-  { name: 'Teal', hex: '#1D9E75' },
-  { name: 'Slate', hex: '#3D5A80' },
+  { name: 'Royal Blue', hex: '#1B4FB0' },
+  { name: 'Burgundy', hex: '#8C1B2D' },
+  { name: 'Sunshine Gold', hex: '#F2B400' },
+  { name: 'Sky Blue', hex: '#4CAEE8' },
+  { name: 'Plum', hex: '#6B2D8C' },
+  { name: 'Crimson', hex: '#C8222F' },
+  { name: 'Coral', hex: '#E0826C' },
 ] as const;

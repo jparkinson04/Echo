@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
+import { useAccent } from '@/components/AccentProvider';
 import {
   ShareableGraphic,
   type ShareTemplate,
@@ -57,6 +58,7 @@ export default function SharePage() {
   const [busy, setBusy] = useState(false);
   const [template, setTemplate] = useState<ShareTemplate>('hero');
   const [focusCategory, setFocusCategory] = useState<string>(MOCK_CATEGORIES[0].category);
+  const { logoDataUrl } = useAccent();
 
   const d = MOCK_DASHBOARD;
 
@@ -78,8 +80,9 @@ export default function SharePage() {
         nominee: MOCK_SUBMISSION.nominee_name,
         content: MOCK_SUBMISSION.content,
       },
+      logoDataUrl,
     }),
-    [template, focusCategory, d],
+    [template, focusCategory, d, logoDataUrl],
   );
 
   async function download() {
